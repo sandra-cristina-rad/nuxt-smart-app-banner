@@ -18,7 +18,8 @@
     "prepack": "nuxt-module-build",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
-    "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground"
+    "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",
+    "test": "echo \"Tests not implemented\""
   },
   "dependencies": {
     "@nuxt/kit": "^3.1.0",
