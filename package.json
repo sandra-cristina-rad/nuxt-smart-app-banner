@@ -1,6 +1,6 @@
 {
   "name": "nuxt-smart-app-banner",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "type": "module",
   "exports": {
