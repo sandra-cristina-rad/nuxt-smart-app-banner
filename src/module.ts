@@ -69,7 +69,7 @@ export default defineNuxtModule<ModuleOptions>({
 
       addPlugin(resolve(runtimeDir, 'plugin'))
       addComponent({
-        name: 'SmartBanner',
+        name: 'SmartAppBanner',
         global: true,
         filePath: resolve('./components/Banner.vue'),
         mode: 'client'

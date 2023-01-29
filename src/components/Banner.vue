@@ -14,15 +14,9 @@ import * as querry from 'component-query';
 // Todo: callbacks, app store lang, native ios
 
 const bannerConfig = useRuntimeConfig().smartAppBanner;
-
 // Preferch icon if set
 if (bannerConfig.icon) {
     useHead({
-        //Todo ios native app id
-        meta: [
-            { name: 'description', content: 'Hello World' },
-        ],
-        //script: [{ src: 'https://example.com/script.js' }],
         link: [{
             rel: 'preload',
             href: bannerConfig.icon,
@@ -45,6 +39,13 @@ const setupBanner = () => {
     const platformData = identifyPlatform(bannerConfig, agent);
     appId.value = platformData.appId;
     platform.value = platformData.platform;
+
+    useHead({
+        //Todo ios native app id
+        meta: [
+            { name: 'apple-itunes-app', content: `app-id=${appId}` },
+        ]
+    })
 
     // Don't show banner on ANY of the following conditions:
     // - device os is not supported,

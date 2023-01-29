@@ -2,7 +2,7 @@
   <div>
     Nuxt module playground!
   </div>
-  <SmartBanner />
+  <SmartAppBanner />
 </template>
 
 <script setup>
