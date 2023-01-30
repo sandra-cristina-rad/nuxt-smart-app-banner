@@ -39,10 +39,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@nuxt/kit": "^3.1.0",
-    "ua-parser-js": "^0.7.18",
-    "cookie-cutter": "^0.2.0",
-    "component-query": "0.0.3"
+    "@nuxt/kit": "^3.1.0"
   },
   "devDependencies": {
     "@nuxt/module-builder": "^0.2.1",

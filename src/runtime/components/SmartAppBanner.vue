@@ -4,11 +4,16 @@
 import { useHead, ref, computed, watch, useRuntimeConfig } from '#imports'
 import { SmartAppBannerTheme, SmartAppBannerPlatform } from "../types";
 import { identifyPlatform, isMobileSafariPlatform, getStoreLink, getIconReals } from '../platformHelper';
-import * as ua from 'ua-parser-js'
-import * as cookie from 'cookie-cutter';
-import * as querry from 'component-query';
+//import * as ua from 'ua-parser-js'
+//import * as cookie from 'cookie-cutter';
+//import * as querry from 'component-query';
 
-
+const ua = (value) => value;
+const cookie = {
+    get: (value) => value,
+    set: (value, val, val2) => value
+};
+const querry = (value) => value;
 // Todo: callbacks, app store lang, native ios
 
 const bannerConfig = useRuntimeConfig().smartAppBanner;
@@ -25,25 +30,25 @@ if (bannerConfig.icon) {
 
 
 const showBanner = ref<boolean>(false);
-const platform = ref<SmartAppBannerPlatform>(SmartAppBannerPlatform.android);
-const appId = ref<string>(bannerConfig.androidAppId);
+const platform = ref<SmartAppBannerPlatform>(null);
+const appId = ref<string>(null);
 const storeLink = ref<string>("");
 const theme = ref<SmartAppBannerTheme>(SmartAppBannerTheme.android);
 const inStoreText = ref<string>("");
 const icon = ref<string>("");
 
 const setupBanner = () => {
-    const agent = ua(window?.navigator.userAgent);
-    const platformData = identifyPlatform(bannerConfig, agent);
-    appId.value = platformData.appId;
-    platform.value = platformData.platform;
-
     useHead({
         //Todo ios native app id
         meta: [
             { name: 'apple-itunes-app', content: `app-id=${appId}` },
         ]
     })
+
+    const agent = ua(window?.navigator.userAgent);
+    const platformData = identifyPlatform(bannerConfig, agent);
+    appId.value = platformData.appId;
+    platform.value = platformData.platform;
 
     // Don't show banner on ANY of the following conditions:
     // - device os is not supported,
