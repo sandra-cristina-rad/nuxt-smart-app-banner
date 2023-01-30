@@ -19,7 +19,7 @@ export interface SmartBannerOptions {
         windows: string
     },
     theme?: SmartAppBannerTheme, // put platform type ('ios', 'android', etc.) here to force single theme on all device
-    icon?: string, // full path to icon image if not using website icon image
+    icon: string, // full path to icon image if not using website icon image
     force?: SmartAppBannerPlatform, // put platform type ('ios', 'android', etc.) here for emulation
     //onInstall:
 }
