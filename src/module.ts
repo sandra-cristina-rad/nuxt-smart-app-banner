@@ -25,7 +25,7 @@ export default defineNuxtModule<ModuleOptions>({
       title: 'Title',
       author: 'Company LLC',
       button: 'View',
-      icon: 'https://icon-library.com/images/play-store-icon/play-store-icon-9.jpg',
+      icon: '',
       store: {
         ios: 'On the App Store',
         android: 'In Google Play',
