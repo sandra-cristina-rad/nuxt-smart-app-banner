@@ -1,5 +1,5 @@
 
-import { Theme, Platform } from "../types";
+import { SmartAppBannerTheme, SmartAppBannerPlatform } from "../types";
 
 const mixins = {
     ios: {
@@ -14,6 +14,9 @@ const mixins = {
         iconRels: ['android-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
         getStoreLink: function (appId, lang) {
             return 'http://play.google.com/store/apps/details?id=' + appId;
+        },
+        getAppId: (bannerConfig: ) => {
+
         }
     },
     windows: {
@@ -32,18 +35,19 @@ export const identifyPlatform = function (bannerConfig: any, agent: any) {
     if (bannerConfig.force) {
         platform = bannerConfig.force;
     } else if (agent.os.name === 'Windows Phone' || agent.os.name === 'Windows Mobile') {
-        platform = Platform.windows;
+        platform = SmartAppBannerPlatform.windows;
     } else if (agent.os.name === 'iOS') {
-        platform = Platform.ios;
+        platform = SmartAppBannerPlatform.ios;
     } else if (agent.os.name === 'Android') {
-        platform = Platform.android;
+        platform = SmartAppBannerPlatform.android;
     }
 
-    if (platform === Platform.android) {
+
+    if (platform === SmartAppBannerPlatform.android) {
         appId = bannerConfig.androidAppId;
-    } else if (platform === Platform.ios) {
+    } else if (platform === SmartAppBannerPlatform.ios) {
         appId = bannerConfig.iosAppId
-    } else if (platform === Platform.windows) {
+    } else if (platform === SmartAppBannerPlatform.windows) {
         appId = bannerConfig.windowsAppId;
     }
     return {
@@ -56,11 +60,11 @@ export const isMobileSafariPlatform = function (computedTheme, agent) {
     return (computedTheme === 'ios' && agent.browser.name === 'Mobile Safari' && parseInt(agent.os.version, 10) >= 6);
 }
 
-export const getStoreLink = function (platform: Platform, appId, lang) {
+export const getStoreLink = function (platform: SmartAppBannerPlatform, appId, lang) {
     return mixins[platform].getStoreLink(appId, lang);
 }
 
-export const getIconReals = function (platform: Platform) {
+export const getIconReals = function (platform: SmartAppBannerPlatform) {
     return mixins[platform].iconRels;
 }
 

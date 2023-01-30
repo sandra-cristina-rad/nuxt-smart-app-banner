@@ -4,8 +4,8 @@
 import { useNuxtApp, useHead, useState, ref, useAppConfig, computed, watch, useRuntimeConfig } from '#imports'
 import { onBeforeMount, reactive } from 'vue';
 import type { Ref } from 'vue'
-import { Theme, Platform } from "../types";
-import { identifyPlatform, isMobileSafariPlatform, getStoreLink, getIconReals } from '../helpers/platformHelper';
+import { SmartAppBannerTheme, SmartAppBannerPlatform } from "../../types";
+import { identifyPlatform, isMobileSafariPlatform, getStoreLink, getIconReals } from '../../helpers/platformHelper';
 import * as ua from 'ua-parser-js'
 import * as cookie from 'cookie-cutter';
 import * as querry from 'component-query';
@@ -14,7 +14,7 @@ import * as querry from 'component-query';
 // Todo: callbacks, app store lang, native ios
 
 const bannerConfig = useRuntimeConfig().smartAppBanner;
-// Preferch icon if set
+// Prefetch icon if set
 if (bannerConfig.icon) {
     useHead({
         link: [{
@@ -27,10 +27,10 @@ if (bannerConfig.icon) {
 
 
 const showBanner = ref<boolean>(false);
-const platform = ref<Platform>(Platform.android);
+const platform = ref<SmartAppBannerPlatform>(SmartAppBannerPlatform.android);
 const appId = ref<string>(bannerConfig.androidAppId);
 const storeLink = ref<string>("");
-const theme = ref<Theme>(Theme.android);
+const theme = ref<SmartAppBannerTheme>(SmartAppBannerTheme.android);
 const inStoreText = ref<string>("");
 const icon = ref<string>("");
 
@@ -98,27 +98,19 @@ const mainContainerClass = `smartbanner smartbanner-${theme.value}`;
 const iconStyle = `background-image: url(${icon.value})`;
 
 const installClick = () => {
-    console.log("INSTALL CLICK --------->")
     showBanner.value = false;
     cookie.set(appId.value + '-smartbanner-installed', 'true', {
         path: '/',
         expires: new Date(Number(new Date()) + (bannerConfig.daysReminder * 1000 * 60 * 60 * 24))
     });
-    //if (typeof this.options.close === 'function') {
-    //    return this.options.close();
-    //}
 }
 
 const dismissClick = () => {
-    console.log("Dismiss CLICK ----------->")
     showBanner.value = false;
     cookie.set(appId.value + '-smartbanner-closed', 'true', {
         path: '/',
         expires: new Date(Number(new Date()) + (bannerConfig.daysHidden * 1000 * 60 * 60 * 24))
     });
-    //if (typeof this.options.close === 'function') {
-    //    return this.options.close();
-    //}
 }
 
 </script>
