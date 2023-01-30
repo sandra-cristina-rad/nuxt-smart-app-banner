@@ -48,7 +48,7 @@ export default defineNuxtModule<ModuleOptions>({
       const { resolve } = createResolver(import.meta.url)
       const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
       nuxt.options.build.transpile.push(runtimeDir)
-      //nuxt.options.build.transpile.push()
+
       addPlugin(resolve(runtimeDir, 'plugin'))
       addComponent({
         name: options.overrideComponentNameWith || 'SmartAppBanner',

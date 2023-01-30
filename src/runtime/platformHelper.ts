@@ -29,8 +29,7 @@ const mixins = {
 };
 
 export const identifyPlatform = function (bannerConfig: any, agent: any) {
-    let appId: string | null = null;
-    let platform: SmartAppBannerPlatform | null = null;
+    let appId, platform: SmartAppBannerPlatform = SmartAppBannerPlatform.android;
     console.log(`Debug : Useragent: ${JSON.stringify(agent)}`);
 
     if (bannerConfig.force) {
@@ -42,9 +41,8 @@ export const identifyPlatform = function (bannerConfig: any, agent: any) {
     } else if (agent.os.name === 'Android') {
         platform = SmartAppBannerPlatform.android;
     }
-    if (platform) {
-        appId = mixins[platform].getAppId(bannerConfig);
-    }
+
+    appId = mixins[platform].getAppId(bannerConfig);
 
     return {
         platform,
