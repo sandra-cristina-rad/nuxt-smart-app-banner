@@ -1,5 +1,5 @@
 
-import { SmartAppBannerTheme, SmartAppBannerPlatform } from "../types";
+import { SmartAppBannerTheme, SmartAppBannerPlatform } from "../runtime/types";
 
 const mixins = {
     ios: {

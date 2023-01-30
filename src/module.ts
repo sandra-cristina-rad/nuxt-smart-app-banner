@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'url'
 import { defineNuxtModule, addPlugin, createResolver, addComponent } from '@nuxt/kit'
-import { SmartBannerOptions } from "./types";
+import { SmartBannerOptions } from "./runtime/types";
 export interface ModuleOptions {
   addPlugin: boolean;
   overrideComponentNameWith: string;

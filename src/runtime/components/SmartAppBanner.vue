@@ -1,10 +1,8 @@
 <script setup lang="ts">
 
 // ts-ignore
-import { useNuxtApp, useHead, useState, ref, useAppConfig, computed, watch, useRuntimeConfig } from '#imports'
-import { onBeforeMount, reactive } from 'vue';
-import type { Ref } from 'vue'
-import { SmartAppBannerTheme, SmartAppBannerPlatform } from "../../types";
+import { useHead, ref, computed, watch, useRuntimeConfig } from '#imports'
+import { SmartAppBannerTheme, SmartAppBannerPlatform } from "../types";
 import { identifyPlatform, isMobileSafariPlatform, getStoreLink, getIconReals } from '../../helpers/platformHelper';
 import * as ua from 'ua-parser-js'
 import * as cookie from 'cookie-cutter';
