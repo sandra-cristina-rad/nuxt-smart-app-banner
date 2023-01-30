@@ -35,7 +35,8 @@
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",
-    "test": "echo \"Tests not implemented\""
+    "test": "echo \"Tests not implemented\"",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@nuxt/kit": "^3.1.0",

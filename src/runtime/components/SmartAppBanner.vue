@@ -3,7 +3,7 @@
 // ts-ignore
 import { useHead, ref, computed, watch, useRuntimeConfig } from '#imports'
 import { SmartAppBannerTheme, SmartAppBannerPlatform } from "../types";
-import { identifyPlatform, isMobileSafariPlatform, getStoreLink, getIconReals } from '../../helpers/platformHelper';
+import { identifyPlatform, isMobileSafariPlatform, getStoreLink, getIconReals } from '../platformHelper';
 import * as ua from 'ua-parser-js'
 import * as cookie from 'cookie-cutter';
 import * as querry from 'component-query';

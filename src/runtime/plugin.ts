@@ -1,5 +1,5 @@
 import { defineNuxtPlugin } from '#app'
 
 export default defineNuxtPlugin((nuxtApp) => {
-  console.log('Plugin banner installed')
+  console.log('Plugin banner installed');
 })

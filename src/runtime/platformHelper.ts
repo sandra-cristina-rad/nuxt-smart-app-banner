@@ -1,5 +1,5 @@
 
-import { SmartAppBannerTheme, SmartAppBannerPlatform } from "../runtime/types";
+import { SmartAppBannerTheme, SmartAppBannerPlatform, SmartBannerOptions } from "./types";
 
 const mixins = {
     ios: {
@@ -7,7 +7,8 @@ const mixins = {
         iconRels: ['apple-touch-icon-precomposed', 'apple-touch-icon'],
         getStoreLink: function (appId, lang) {
             return 'https://itunes.apple.com/' + lang + '/app/id' + appId + "?mt=8";
-        }
+        },
+        getAppId: (bannerConfig: SmartBannerOptions) => bannerConfig.iosAppId
     },
     android: {
         appMeta: 'google-play-app',
@@ -15,21 +16,20 @@ const mixins = {
         getStoreLink: function (appId, lang) {
             return 'http://play.google.com/store/apps/details?id=' + appId;
         },
-        getAppId: (bannerConfig: ) => {
-
-        }
+        getAppId: (bannerConfig: SmartBannerOptions) => bannerConfig.androidAppId
     },
     windows: {
         appMeta: 'msApplication-ID',
         iconRels: ['windows-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
         getStoreLink: function (appId, lang) {
             return 'http://www.windowsphone.com/s?appid=' + appId;
-        }
+        },
+        getAppId: (bannerConfig: SmartBannerOptions) => bannerConfig.windowsAppId
     }
 };
 
 export const identifyPlatform = function (bannerConfig: any, agent: any) {
-    let appId, platform;
+    let appId, platform: SmartAppBannerPlatform = SmartAppBannerPlatform.android;
     console.log(`Debug : Useragent: ${JSON.stringify(agent)}`);
 
     if (bannerConfig.force) {
@@ -42,14 +42,8 @@ export const identifyPlatform = function (bannerConfig: any, agent: any) {
         platform = SmartAppBannerPlatform.android;
     }
 
+    appId = mixins[platform].getAppId(bannerConfig);
 
-    if (platform === SmartAppBannerPlatform.android) {
-        appId = bannerConfig.androidAppId;
-    } else if (platform === SmartAppBannerPlatform.ios) {
-        appId = bannerConfig.iosAppId
-    } else if (platform === SmartAppBannerPlatform.windows) {
-        appId = bannerConfig.windowsAppId;
-    }
     return {
         platform,
         appId
