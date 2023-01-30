@@ -25,6 +25,7 @@ export default defineNuxtModule<ModuleOptions>({
       title: 'Title',
       author: 'Company LLC',
       button: 'View',
+      icon: 'https://icon-library.com/images/play-store-icon/play-store-icon-9.jpg',
       store: {
         ios: 'On the App Store',
         android: 'In Google Play',
@@ -39,7 +40,6 @@ export default defineNuxtModule<ModuleOptions>({
       iosAppId: "",
       windowsAppId: "",
       // , theme: '' // put platform type ('ios', 'android', etc.) here to force single theme on all device
-      //, icon: ''
     }
 
   },
