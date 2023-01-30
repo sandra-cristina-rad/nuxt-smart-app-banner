@@ -1,4 +1,4 @@
-# Nuxt Smart App Banner [alfa]
+# Nuxt Smart App Banner [alfa] [nuxt ^3.0.0]
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
@@ -43,11 +43,10 @@ npm install --save-dev nuxt-smart-app-banner
 import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
-  modules: [
-    ['nuxt-smart-app-banner'],
+    modules: ['nuxt-smart-app-banner'],
     "nuxt-smart-app-banner": {
         addPlugin: true,
-        overrideComponentNameWith: '', // Use custom name for component to avoid collisions if need (default <SmartAppBanner/>)
+        overrideComponentNameWith: '', // Use custom name for component to avoid collisions if need (default 'SmartAppBanner')
         bannerOptions: {
             daysHidden: 15,   // days to hide banner after close button is clicked (defaults to 15)
             daysReminder: 90, // days to hide banner after "VIEW" button is clicked (defaults to 90)
@@ -55,7 +54,7 @@ export default defineNuxtConfig({
             title: 'Title',
             author: 'Company LLC',
             button: 'View',
-            icon: '', // path to application icon 
+            icon: 'https://icon-library.com/images/play-store-icon/play-store-icon-9.jpg', // path to application icon 
             store: {
                 ios: 'On the App Store',
                 android: 'In Google Play',
@@ -70,11 +69,14 @@ export default defineNuxtConfig({
             iosAppId: "", // ios app id, should be numeric 
             windowsAppId: "",
             // , theme: '' // put platform type ('ios', 'android', etc.) here to force single theme on all device
+        }
+
     }
-  ]
 })
+
 ```
-3. Place smart banner component into desired component, page or layout
+3. Place smart banner component into desired component, page or layout\
+⚠️ Note: is you set overrideComponentNameWith, use custom name instead of SmartAppBanner ⚠️
 ```html
 <template>
   <div>
