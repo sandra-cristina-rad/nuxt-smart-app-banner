@@ -1,5 +1,5 @@
 
-import { SmartAppBannerTheme, SmartAppBannerPlatform, SmartBannerOptions } from "./types";
+import { SmartAppBannerPlatform, SmartBannerOptions } from "./types";
 
 const mixins = {
     ios: {
@@ -28,21 +28,22 @@ const mixins = {
     }
 };
 
-export const identifyPlatform = function (bannerConfig: any, agent: any) {
-    let appId, platform: SmartAppBannerPlatform = SmartAppBannerPlatform.android;
-    console.log(`Debug : Useragent: ${JSON.stringify(agent)}`);
-
+export const identifyPlatform = function (bannerConfig: any, osName: string) {
+    let appId: string | null = null;
+    let platform: SmartAppBannerPlatform | null = null;
     if (bannerConfig.force) {
         platform = bannerConfig.force;
-    } else if (agent.os.name === 'Windows Phone' || agent.os.name === 'Windows Mobile') {
+    } else if (osName === 'Windows Phone' || osName === 'Windows Mobile') {
         platform = SmartAppBannerPlatform.windows;
-    } else if (agent.os.name === 'iOS') {
+    } else if (osName === 'iOS') {
         platform = SmartAppBannerPlatform.ios;
-    } else if (agent.os.name === 'Android') {
+    } else if (osName === 'Android') {
         platform = SmartAppBannerPlatform.android;
     }
 
-    appId = mixins[platform].getAppId(bannerConfig);
+    if (platform) {
+        appId = mixins[platform].getAppId(bannerConfig);
+    }
 
     return {
         platform,
@@ -50,8 +51,8 @@ export const identifyPlatform = function (bannerConfig: any, agent: any) {
     }
 }
 
-export const isMobileSafariPlatform = function (computedTheme, agent) {
-    return (computedTheme === 'ios' && agent.browser.name === 'Mobile Safari' && parseInt(agent.os.version, 10) >= 6);
+export const isMobileSafariPlatform = function (computedTheme, browserName: string, osVersion: string) {
+    return (computedTheme === 'ios' && browserName === 'Mobile Safari' && parseInt(osVersion, 10) >= 6);
 }
 
 export const getStoreLink = function (platform: SmartAppBannerPlatform, appId, lang) {

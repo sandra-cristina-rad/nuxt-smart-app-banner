@@ -4,9 +4,8 @@
 import { useHead, ref, computed, watch, useRuntimeConfig } from '#imports'
 import { SmartAppBannerTheme, SmartAppBannerPlatform } from "../types";
 import { identifyPlatform, isMobileSafariPlatform, getStoreLink, getIconReals } from '../platformHelper';
-import * as ua from 'ua-parser-js'
-import * as cookie from 'cookie-cutter';
-import * as querry from 'component-query';
+import Cookies from 'js-cookie'
+import Bowser from "bowser";
 
 
 // Todo: callbacks, app store lang, native ios
@@ -33,8 +32,8 @@ const inStoreText = ref<string>("");
 const icon = ref<string>("");
 
 const setupBanner = () => {
-    const agent = ua(window?.navigator.userAgent);
-    const platformData = identifyPlatform(bannerConfig, agent);
+    const bowser = Bowser.getParser(window?.navigator?.userAgent);
+    const platformData = identifyPlatform(bannerConfig, bowser.getOSName());
     appId.value = platformData.appId;
     platform.value = platformData.platform;
 
@@ -55,19 +54,19 @@ const setupBanner = () => {
         return;
     }
 
-    const isMobileSafari = isMobileSafariPlatform(platform.value, agent);
+    const isMobileSafari = isMobileSafariPlatform(platform.value, bowser.getBrowserName(), bowser.getOSVersion());
 
     var runningStandAlone = (window?.navigator as any).standalone;
-    var userDismissed = cookie.get(appId.value + '-smartbanner-closed');
-    var userInstalled = cookie.get(appId.value + '-smartbanner-installed');
+    var userDismissed = Cookies.get(appId.value + '-smartbanner-closed');
+    var userInstalled = Cookies.get(appId.value + '-smartbanner-installed');
 
     if (isMobileSafari || runningStandAlone || userDismissed || userInstalled) {
         return;
     }
 
-    // - If we dont have app id in meta, dont display the banner
+    // - If we dont have app id, dont display the banner
     // - If opened in safari IOS, dont display the banner
-    if (!appId.value && agent.os.name === 'IOS' && agent.browser.name === 'Safari') {
+    if (!appId.value && bowser.getOSName() === 'IOS' && bowser.getBrowserName() === 'Safari') {
         return;
     }
 
@@ -79,7 +78,7 @@ const setupBanner = () => {
     } else {
         const iconRels = getIconReals(platform.value);
         for (var i = 0; i < iconRels.length; i++) {
-            var rel = querry('link[rel="' + iconRels[i] + '"]');
+            var rel = window?.document.querySelector('link[rel="' + iconRels[i] + '"]');
 
             if (rel) {
                 icon.value = rel.getAttribute('href');
@@ -97,7 +96,7 @@ const iconStyle = `background-image: url(${icon.value})`;
 
 const installClick = () => {
     showBanner.value = false;
-    cookie.set(appId.value + '-smartbanner-installed', 'true', {
+    Cookies.set(appId.value + '-smartbanner-installed', 'true', {
         path: '/',
         expires: new Date(Number(new Date()) + (bannerConfig.daysReminder * 1000 * 60 * 60 * 24))
     });
@@ -105,7 +104,7 @@ const installClick = () => {
 
 const dismissClick = () => {
     showBanner.value = false;
-    cookie.set(appId.value + '-smartbanner-closed', 'true', {
+    Cookies.set(appId.value + '-smartbanner-closed', 'true', {
         path: '/',
         expires: new Date(Number(new Date()) + (bannerConfig.daysHidden * 1000 * 60 * 60 * 24))
     });
