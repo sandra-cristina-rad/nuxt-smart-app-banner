@@ -7,12 +7,12 @@
 ![Alt text](android_view.png?raw=true "dsdfsdfsdfsdf") ![Alt text](ios_view.png?raw=true "Title")
 
 Based on\
-'jQuery Smart Banner' by Arnold Daniels <arnold@jasny.net> https://github.com/jasny/jquery.smartbanner,\
+'jQuery Smart Banner' by Arnold Daniels <arnold@jasny.net> https://github.com/jasny/jquery.smartbanner ,\
 'Smart App Banner' by Vitaly Glibin <glibin.v@gmail.com> https://github.com/kudago/smart-app-banner
 
 > Smart App Banner for Nuxt
 
-- [✨ &nbsp;Release Notes](/CHANGELOG.md)
+- [✨ &nbsp;Release Notes(not implemented yet)](/CHANGELOG.md)
 <!-- - [📖 &nbsp;Documentation](https://example.com) -->
 
 ## Features

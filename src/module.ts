@@ -9,8 +9,8 @@ export interface ModuleOptions {
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'nuxt-smart-banner',
-    configKey: 'nuxt-smart-banner',
+    name: 'nuxt-smart-app-banner',
+    configKey: 'nuxt-smart-app-banner',
     compatibility: {
       nuxt: '^3.0.0'
     }
