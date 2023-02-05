@@ -46,10 +46,13 @@ import { defineNuxtConfig } from 'nuxt/config'
 export default defineNuxtConfig({
     modules: ['nuxt-smart-app-banner'],
     "nuxt-smart-app-banner": {
-        bannerOptions: {
-           ...
-        }
-
+      bannerOptions: {
+        title: "Title",
+        androidAppId: "",
+        icon: "https://icon-library.com/images/play-store-icon/play-store-icon-9.jpg",
+        iosAppId: "",
+        appStoreLanguage: "us",
+      }
     }
 })
 
@@ -64,6 +67,38 @@ export default defineNuxtConfig({
     <NuxtWelcome />
   </div>
 </template>
+```
+
+4. Using emits(callbacks)
+```js
+<template>
+  <div>
+    Nuxt module playground!
+  </div>
+  <SmartAppBanner 
+    @on-dismiss="handleOnDismiss" // callback fired on clicking close button
+    @on-install="handleOnInstall" // callback fired on clicking install button
+    @on-not-shown="handleOnNotShown" // callback fired on banner not shown because it was previously either clicked or dismissed
+    @on-shown="handleOnShown" // callback fired on banner shown
+  />
+</template>
+
+<script setup>
+
+const handleOnDismiss = (platform, appId) => {
+  console.log(`handleOnDismiss ${platform} ${appId}`)
+}
+const handleOnInstall = (platform, appId) => {
+  console.log(`handleOnInstall ${platform} ${appId}`)
+}
+const handleOnNotShown = (platform, appId, reason) => {
+  console.log(`handleOnNotShown ${platform} ${appId} ${reason}`)
+}
+const handleOnShown = (platform, appId) => {
+  console.log(`handleOnShown ${platform} ${appId}`)
+}
+
+</script>
 ```
 That's it! You can now use Nuxt Smart App Banner in your Nuxt app ✨
 
@@ -95,11 +130,7 @@ export interface ModuleOptions {
     },
     icon: string; // fallback icon url for all platforms
     theme?: SmartAppBannerTheme; // put platform type here to force single theme on all device
-    force?: SmartAppBannerPlatform, // put platform type here for force banner platform for debug
-    onInstall?: (platform: SmartAppBannerPlatform, appId: string) => void; // callback fired on clicking install button
-    onDismiss?: (platform: SmartAppBannerPlatform, appId: string) => void; // callback fired on clicking close button
-    onShown?: (platform: SmartAppBannerPlatform, appId: string) => void; // callback fired on banner shown
-    onNotShown?: (platform: SmartAppBannerPlatform, appId: string, reason: SmartAppBannerNotShownReason) => void; // callback fired on banner not shown because it was previously either clicked or dismissed
+    force?: SmartAppBannerPlatform, // put platform type here for force banner platform for debug 
     }
 }
 ```

@@ -2,6 +2,15 @@
 
 <script setup lang="ts">
 import { useSmartAppBanner } from '../composables/useSmartAppBanner';
+import { defineEmits } from 'vue'
+import { SmartAppBannerNotShownReason, SmartAppBannerPlatform } from '../types';
+
+const emit = defineEmits<{
+  (event: 'onNotShown', platform: SmartAppBannerPlatform, appId: string, reason: SmartAppBannerNotShownReason): void
+  (event: 'onShown', platform: SmartAppBannerPlatform, appId: string): void
+  (event: 'onInstall', platform: SmartAppBannerPlatform, appId: string): void
+  (event: 'onDismiss', platform: SmartAppBannerPlatform, appId: string): void
+}>()
 
 const {
     author,
@@ -14,7 +23,7 @@ const {
     mainContainerClass,
     showBanner,
     storeLink,
-} = useSmartAppBanner();
+} = useSmartAppBanner(emit);
 
 
 </script>

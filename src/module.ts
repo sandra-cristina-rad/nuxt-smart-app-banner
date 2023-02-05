@@ -17,9 +17,9 @@ export default defineNuxtModule<ModuleOptions>({
   defaults: {
     bannerOptions: {
       useNativeIosBannerForSafari: true,
-      daysHidden: 15,   // days to hide banner after close button is clicked (defaults to 15)
-      daysReminder: 90, // days to hide banner after "VIEW" button is clicked (defaults to 90)
-      appStoreLanguage: 'us', // language code for the App Store 
+      daysHidden: 15,   
+      daysReminder: 90, 
+      appStoreLanguage: 'us',
       title: 'Title',
       author: 'Company LLC',
       button: 'View',
@@ -34,7 +34,6 @@ export default defineNuxtModule<ModuleOptions>({
       },
       androidAppId: "",
       iosAppId: "",
-      // , theme: '' // put platform type ('ios', 'android', etc.) here to force single theme on all device
     }
 
   },

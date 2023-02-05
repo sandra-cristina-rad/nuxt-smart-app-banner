@@ -5,7 +5,7 @@ import Cookies from 'js-cookie'
 import Bowser from "bowser";
 import { useHead, useRuntimeConfig } from '#imports'
 
-const useSmartAppBannerCallbacks = (appId: ComputedRef<string>, platform: Ref<SmartAppBannerPlatform>, setShowBanner: (value: boolean) => void, bannerConfig: SmartBannerOptions) => {
+const useSmartAppBannerCallbacks = (appId: ComputedRef<string>, platform: Ref<SmartAppBannerPlatform>, setShowBanner: (value: boolean) => void, emit: any, bannerConfig: SmartBannerOptions) => {
 
     const installClick = () => {
         setShowBanner(false);
@@ -13,9 +13,7 @@ const useSmartAppBannerCallbacks = (appId: ComputedRef<string>, platform: Ref<Sm
             path: '/',
             expires: new Date(Number(new Date()) + (bannerConfig.daysReminder * 1000 * 60 * 60 * 24))
         });
-        if (bannerConfig.onInstall && typeof (bannerConfig.onInstall) === 'function') {
-            bannerConfig.onInstall(platform.value, appId.value);
-        }
+        emit('onInstall', platform.value, appId.value);
     };
 
     const dismissClick = () => {
@@ -24,9 +22,7 @@ const useSmartAppBannerCallbacks = (appId: ComputedRef<string>, platform: Ref<Sm
             path: '/',
             expires: new Date(Number(new Date()) + (bannerConfig.daysHidden * 1000 * 60 * 60 * 24))
         });
-        if (bannerConfig.onDismiss && typeof (bannerConfig.onDismiss) === 'function') {
-            bannerConfig.onDismiss(platform.value, appId.value);
-        }
+        emit('onDismiss', platform.value, appId.value);
     };
 
     return { dismissClick, installClick }
@@ -68,7 +64,7 @@ const useSmartAppBannerState = (bannerConfig: SmartBannerOptions) => {
     return { showBanner, platform, appId, storeLink, theme, inStoreText, icon, setPlatform, setShowBanner, mainContainerClass, iconStyle };
 }
 
-export const useSmartAppBanner = () => {
+export const useSmartAppBanner = (emit: any) => {
     const bannerConfig = useRuntimeConfig().smartAppBanner as SmartBannerOptions;
     const {
         appId,
@@ -82,7 +78,7 @@ export const useSmartAppBanner = () => {
         mainContainerClass,
     } = useSmartAppBannerState(bannerConfig);
 
-    const { dismissClick, installClick } = useSmartAppBannerCallbacks(appId, platform, setShowBanner, bannerConfig);
+    const { dismissClick, installClick } = useSmartAppBannerCallbacks(appId, platform, setShowBanner, emit, bannerConfig);
 
     const state = {
         title: bannerConfig.title, author: bannerConfig.author, buttonText: bannerConfig.button,
@@ -126,16 +122,12 @@ export const useSmartAppBanner = () => {
     const userInstalled = Cookies.get(appId.value + '-smartbanner-installed');
 
     if (userDismissed) {
-        if (bannerConfig.onNotShown && typeof (bannerConfig.onNotShown) === 'function') {
-            bannerConfig.onNotShown(platform.value, appId.value, SmartAppBannerNotShownReason.dismissed);
-        }
+        emit('onNotShown', platform.value, appId.value, SmartAppBannerNotShownReason.dismissed);
         return state;
     }
 
     if (userInstalled) {
-        if (bannerConfig.onNotShown && typeof (bannerConfig.onNotShown) === 'function') {
-            bannerConfig.onNotShown(platform.value, appId.value, SmartAppBannerNotShownReason.installed);
-        }
+        emit('onNotShown', platform.value, appId.value, SmartAppBannerNotShownReason.installed);
         return state;
     }
 
@@ -145,10 +137,7 @@ export const useSmartAppBanner = () => {
     }
 
     setShowBanner(true);
-    
-    if (bannerConfig.onShown && typeof (bannerConfig.onShown) === 'function') {
-        bannerConfig.onShown(platform.value, appId.value);
-    }
+    emit('onShown', platform.value, appId.value);
 
     return state;
 }
