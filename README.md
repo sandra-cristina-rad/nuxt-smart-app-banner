@@ -1,4 +1,4 @@
-# Nuxt Smart App Banner [alfa] [nuxt ^3.0.0]
+# Nuxt Smart App Banner [nuxt ^3.0.0]
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
@@ -12,15 +12,16 @@ Based on\
 
 > Smart App Banner for Nuxt
 
-- [✨ &nbsp;Release Notes(not implemented yet)](/CHANGELOG.md)
+- [✨ &nbsp;Release Notes](/CHANGELOG.md)
 <!-- - [📖 &nbsp;Documentation](https://example.com) -->
 
 ## Features
 
 <!-- Highlight some of the features your module provide here -->
-- &nbsp;Smart App Banner for Anroid/IOS
-- 🚠 &nbsp;Bar
-- 🌲 &nbsp;Baz
+- Smart App Banner for Anroid/IOS
+- Nuxt 3 compatible
+- Support native IOS banner
+- Callbacks available
 
 ## Quick Setup
 
@@ -45,38 +46,17 @@ import { defineNuxtConfig } from 'nuxt/config'
 export default defineNuxtConfig({
     modules: ['nuxt-smart-app-banner'],
     "nuxt-smart-app-banner": {
-        addPlugin: true,
-        overrideComponentNameWith: '', // Use custom name for component to avoid collisions if need (default 'SmartAppBanner')
         bannerOptions: {
-            daysHidden: 15,   // days to hide banner after close button is clicked (defaults to 15)
-            daysReminder: 90, // days to hide banner after "VIEW" button is clicked (defaults to 90)
-            appStoreLanguage: 'us', // language code for the App Store 
-            title: 'Title',
-            author: 'Company LLC',
-            button: 'View',
-            icon: 'https://icon-library.com/images/play-store-icon/play-store-icon-9.jpg', // path to application icon 
-            store: {
-                ios: 'On the App Store',
-                android: 'In Google Play',
-                windows: 'In Windows store'
-            },
-            price: {
-                ios: 'FREE',
-                android: 'FREE',
-                windows: 'FREE'
-            },
-            androidAppId: "", // android app id in com.******* format
-            iosAppId: "", // ios app id, should be numeric 
-            windowsAppId: "",
-            // , theme: '' // put platform type ('ios', 'android', etc.) here to force single theme on all device
+           ...
         }
 
     }
 })
 
 ```
+
 3. Place smart banner component into desired component, page or layout\
-⚠️ Note: is you set overrideComponentNameWith, use custom name instead of SmartAppBanner ⚠️
+⚠️ Note: if you set overrideComponentNameWith, use custom name instead of SmartAppBanner ⚠️
 ```html
 <template>
   <div>
@@ -86,6 +66,43 @@ export default defineNuxtConfig({
 </template>
 ```
 That's it! You can now use Nuxt Smart App Banner in your Nuxt app ✨
+
+## Config overview
+```js
+export interface ModuleOptions {
+  overrideComponentNameWith?: string; // Use to override default component name
+  bannerOptions: {
+    useNativeIosBannerForSafari: boolean; // use native ios banner if available instead of custom (default: true)
+    daysHidden: number;  // days to banner appear again after close button is clicked (defaults to 15)
+    daysReminder: number;  // days to banner appear again after "VIEW" button is clicked (defaults to 90)
+    appStoreLanguage: string; // ios app store language
+    title: string;  // title text shown on banner
+    author: string;  // author text shown on banner
+    button: string;  // button text shown on banner
+    androidAppId: string;  // android app id
+    iosAppId: string; // ios app id
+    store: {
+        ios: string; // Instore text shown on banner for ios
+        android: string; // Instore text shown on banner for android
+    },
+    price: {
+        ios: string; // Price text shown on banner for ios
+        android: string; // Price text shown on banner for ios
+    },
+    icons?: {
+        ios: string; // Url for app icon shown on banner for ios
+        android: string; // Url for app icon shown on banner for android
+    },
+    icon: string; // fallback icon url for all platforms
+    theme?: SmartAppBannerTheme; // put platform type here to force single theme on all device
+    force?: SmartAppBannerPlatform, // put platform type here for force banner platform for debug
+    onInstall?: (platform: SmartAppBannerPlatform, appId: string) => void; // callback fired on clicking install button
+    onDismiss?: (platform: SmartAppBannerPlatform, appId: string) => void; // callback fired on clicking close button
+    onShown?: (platform: SmartAppBannerPlatform, appId: string) => void; // callback fired on banner shown
+    onNotShown?: (platform: SmartAppBannerPlatform, appId: string, reason: SmartAppBannerNotShownReason) => void; // callback fired on banner not shown because it was previously either clicked or dismissed
+    }
+}
+```
 
 ## Development
 
@@ -110,7 +127,7 @@ npm run lint
 [npm-version-src]: https://img.shields.io/npm/v/nuxt-smart-app-banner/latest.svg?style=flat&colorA=18181B&colorB=28CF8D
 [npm-version-href]: https://npmjs.com/package/nuxt-smart-app-banner
 
-[npm-downloads-src]: https://img.shields.io/npm/dm/nuxt-smart-app-banner.svg?style=flat&colorA=18181B&colorB=28CF8D
+[npm-downloads-src]: https://img.shields.io/npm/dt/nuxt-smart-app-banner.svg?style=flat&colorA=18181B&colorB=28CF8D
 [npm-downloads-href]: https://npmjs.com/package/nuxt-smart-app-banner
 
 [license-src]: https://img.shields.io/npm/l/nuxt-smart-app-banner.svg?style=flat&colorA=18181B&colorB=28CF8D

@@ -1,65 +1,54 @@
 
+import { Parser } from "bowser";
 import { SmartAppBannerPlatform, SmartBannerOptions } from "./types";
 
-const mixins = {
+interface PlatformData {
+    platform: SmartAppBannerPlatform;
+    iconRels: string[];
+    getStoreLink: (bannerConfig: SmartBannerOptions) => string;
+    getAppId: (bannerConfig: SmartBannerOptions) => string;
+    getIcon: (bannerConfig: SmartBannerOptions) => string;
+}
+
+enum PlatformOs {
+    'Android' = 'android',
+    'iOS' = 'ios'
+}
+
+type PlatformDataKey = SmartAppBannerPlatform | PlatformOs
+
+type PlatformsData = Record<PlatformDataKey, PlatformData>;
+
+export const platformsData: PlatformsData = {
     ios: {
-        appMeta: 'apple-itunes-app',
+        platform: SmartAppBannerPlatform.ios,
         iconRels: ['apple-touch-icon-precomposed', 'apple-touch-icon'],
-        getStoreLink: function (appId, lang) {
-            return 'https://itunes.apple.com/' + lang + '/app/id' + appId + "?mt=8";
-        },
-        getAppId: (bannerConfig: SmartBannerOptions) => bannerConfig.iosAppId
+        getStoreLink: (bannerConfig: SmartBannerOptions) =>
+            'https://itunes.apple.com/' + bannerConfig.appStoreLanguage + '/app/id' + bannerConfig.iosAppId + "?mt=8",
+        getAppId: (bannerConfig: SmartBannerOptions) => bannerConfig.iosAppId,
+        getIcon: (bannerConfig: SmartBannerOptions) => bannerConfig.icons?.ios || bannerConfig.icon,
     },
     android: {
-        appMeta: 'google-play-app',
+        platform: SmartAppBannerPlatform.android,
         iconRels: ['android-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
-        getStoreLink: function (appId, lang) {
-            return 'http://play.google.com/store/apps/details?id=' + appId;
-        },
-        getAppId: (bannerConfig: SmartBannerOptions) => bannerConfig.androidAppId
-    },
-    windows: {
-        appMeta: 'msApplication-ID',
-        iconRels: ['windows-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
-        getStoreLink: function (appId, lang) {
-            return 'http://www.windowsphone.com/s?appid=' + appId;
-        },
-        getAppId: (bannerConfig: SmartBannerOptions) => bannerConfig.windowsAppId
+        getStoreLink: (bannerConfig: SmartBannerOptions) =>
+            'http://play.google.com/store/apps/details?id=' + bannerConfig.androidAppId,
+        getAppId: (bannerConfig: SmartBannerOptions) => bannerConfig.androidAppId,
+        getIcon: (bannerConfig: SmartBannerOptions) => bannerConfig.icons?.android || bannerConfig.icon,
     }
-};
+}
 
-export const identifyPlatform = function (bannerConfig: any, osName: string) {
-    let appId: string | null = null;
-    let platform: SmartAppBannerPlatform | null = null;
+
+export const identifyPlatform = function (bannerConfig: any, osName: string): SmartAppBannerPlatform | null {
     if (bannerConfig.force) {
-        platform = bannerConfig.force;
-    } else if (osName === 'Windows Phone' || osName === 'Windows Mobile') {
-        platform = SmartAppBannerPlatform.windows;
-    } else if (osName === 'iOS') {
-        platform = SmartAppBannerPlatform.ios;
-    } else if (osName === 'Android') {
-        platform = SmartAppBannerPlatform.android;
+        return bannerConfig.force;
     }
-
-    if (platform) {
-        appId = mixins[platform].getAppId(bannerConfig);
+    if (Object.keys(PlatformOs).every(key => key !== osName)) {
+        return null;
     }
-
-    return {
-        platform,
-        appId
-    }
+    return platformsData[PlatformOs[osName]].platform;
 }
 
-export const isMobileSafariPlatform = function (computedTheme, browserName: string, osVersion: string) {
-    return (computedTheme === 'ios' && browserName === 'Mobile Safari' && parseInt(osVersion, 10) >= 6);
+export const isMobileSafariPlatform = function (computedTheme, bowser: Parser.Parser) {
+    return (computedTheme === 'ios' && (bowser.getBrowserName() === 'Mobile Safari' || (bowser.getBrowserName() === 'Safari' && bowser.getPlatformType() === 'mobile')) && parseInt(bowser.getOSVersion(), 10) >= 6);
 }
-
-export const getStoreLink = function (platform: SmartAppBannerPlatform, appId, lang) {
-    return mixins[platform].getStoreLink(appId, lang);
-}
-
-export const getIconReals = function (platform: SmartAppBannerPlatform) {
-    return mixins[platform].iconRels;
-}
-

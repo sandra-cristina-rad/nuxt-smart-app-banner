@@ -1,135 +1,60 @@
+
+
 <script setup lang="ts">
+import { useSmartAppBanner } from '../composables/useSmartAppBanner';
 
-// ts-ignore
-import { useHead, ref, computed, watch, useRuntimeConfig } from '#imports'
-import { SmartAppBannerTheme, SmartAppBannerPlatform } from "../types";
-import { identifyPlatform, isMobileSafariPlatform, getStoreLink, getIconReals } from '../platformHelper';
-import Cookies from 'js-cookie'
-import Bowser from "bowser";
+const {
+    author,
+    buttonText,
+    title,
+    dismissClick,
+    iconStyle,
+    inStoreText,
+    installClick,
+    mainContainerClass,
+    showBanner,
+    storeLink,
+} = useSmartAppBanner();
 
-
-// Todo: callbacks, app store lang, native ios
-
-const bannerConfig = useRuntimeConfig().smartAppBanner;
-// Prefetch icon if set
-if (bannerConfig.icon) {
-    useHead({
-        link: [{
-            rel: 'preload',
-            href: bannerConfig.icon,
-            as: 'image'
-        },],
-    })
-}
-
-
-const showBanner = ref<boolean>(false);
-const platform = ref<SmartAppBannerPlatform>(SmartAppBannerPlatform.android);
-const appId = ref<string>(bannerConfig.androidAppId);
-const storeLink = ref<string>("");
-const theme = ref<SmartAppBannerTheme>(SmartAppBannerTheme.android);
-const inStoreText = ref<string>("");
-const icon = ref<string>("");
-
-const setupBanner = () => {
-    const bowser = Bowser.getParser(window?.navigator?.userAgent);
-    const platformData = identifyPlatform(bannerConfig, bowser.getOSName());
-    appId.value = platformData.appId;
-    platform.value = platformData.platform;
-
-    useHead({
-        //Todo ios native app id
-        meta: [
-            { name: 'apple-itunes-app', content: `app-id=${appId}` },
-        ]
-    })
-
-    // Don't show banner on ANY of the following conditions:
-    // - device os is not supported,
-    // - user is on mobile safari for ios 6 or greater (iOS >= 6 has native support for SmartAppBanner)
-    // - running on standalone mode
-    // - user dismissed banner
-    const unsupported = !platform.value || !bannerConfig.store[platform.value];
-    if (unsupported) {
-        return;
-    }
-
-    const isMobileSafari = isMobileSafariPlatform(platform.value, bowser.getBrowserName(), bowser.getOSVersion());
-
-    var runningStandAlone = (window?.navigator as any).standalone;
-    var userDismissed = Cookies.get(appId.value + '-smartbanner-closed');
-    var userInstalled = Cookies.get(appId.value + '-smartbanner-installed');
-
-    if (isMobileSafari || runningStandAlone || userDismissed || userInstalled) {
-        return;
-    }
-
-    // - If we dont have app id, dont display the banner
-    // - If opened in safari IOS, dont display the banner
-    if (!appId.value && bowser.getOSName() === 'IOS' && bowser.getBrowserName() === 'Safari') {
-        return;
-    }
-
-    storeLink.value = getStoreLink(platform.value, appId.value, bannerConfig.appStoreLanguage);
-    theme.value = bannerConfig.theme || platform.value;
-    inStoreText.value = bannerConfig.price[platform.value] + ' - ' + bannerConfig.store[platform.value];
-    if (bannerConfig.icon) {
-        icon.value = bannerConfig.icon;
-    } else {
-        const iconRels = getIconReals(platform.value);
-        for (var i = 0; i < iconRels.length; i++) {
-            var rel = window?.document.querySelector('link[rel="' + iconRels[i] + '"]');
-
-            if (rel) {
-                icon.value = rel.getAttribute('href');
-                break;
-            }
-        }
-    }
-    showBanner.value = true
-}
-
-setupBanner();
-
-const mainContainerClass = `smartbanner smartbanner-${theme.value}`;
-const iconStyle = `background-image: url(${icon.value})`;
-
-const installClick = () => {
-    showBanner.value = false;
-    Cookies.set(appId.value + '-smartbanner-installed', 'true', {
-        path: '/',
-        expires: new Date(Number(new Date()) + (bannerConfig.daysReminder * 1000 * 60 * 60 * 24))
-    });
-}
-
-const dismissClick = () => {
-    showBanner.value = false;
-    Cookies.set(appId.value + '-smartbanner-closed', 'true', {
-        path: '/',
-        expires: new Date(Number(new Date()) + (bannerConfig.daysHidden * 1000 * 60 * 60 * 24))
-    });
-}
 
 </script>
 
 <template>
-    <div v-cloak v-if="showBanner" :class="showBanner ? 'smartbanner-show' : ''">
-        <div :class="mainContainerClass">
-            <div class="smartbanner-container">
-                <span @click="dismissClick" class="smartbanner-close">&times;</span>
-                <span class="smartbanner-icon" :style="iconStyle"></span>
-                <div class="smartbanner-info">
-                    <div class="smartbanner-title">{{ bannerConfig.title }}</div>
-                    <div> {{ bannerConfig.author }}</div>
-                    <span> {{ inStoreText }} </span>
-                </div>
-                <a @click="installClick" :href="storeLink" class="smartbanner-button">
-                    <span class="smartbanner-button-text">{{ bannerConfig.button }} </span>
-                </a>
-            </div>
+  <div
+    v-cloak
+    v-if="showBanner"
+    :class="showBanner ? 'smartbanner-show' : ''"
+  >
+    <div :class="mainContainerClass">
+      <div class="smartbanner-container">
+        <span
+          class="smartbanner-close"
+          @click="dismissClick"
+        >&times;</span>
+        <span
+          class="smartbanner-icon"
+          :style="iconStyle"
+        />
+        <div class="smartbanner-info">
+          <div class="smartbanner-title">
+            {{ title }}
+          </div>
+          <div class="smartbanner-author">
+            {{ author }}
+          </div>
+          <span class="smartbanner-instore"> {{ inStoreText }} </span>
         </div>
+        <a
+          :href="storeLink"
+          class="smartbanner-button"
+          @click="installClick"
+        >
+          <span class="smartbanner-button-text">{{ buttonText }} </span>
+        </a>
+      </div>
     </div>
-    <p></p>
+  </div>
+  <p />
 </template>
 
 <style scoped>
@@ -360,63 +285,4 @@ const dismissClick = () => {
 .smartbanner-android .smartbanner-button-text:hover {
     background: #2ac7e1;
 }
-
-/** Windows **/
-.smartbanner-windows {
-    background: #f4f4f4;
-    background: linear-gradient(to bottom, #f4f4f4, #cdcdcd);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    line-height: 80px;
-}
-
-.smartbanner-windows .smartbanner-close {
-    border: 0;
-    width: 18px;
-    height: 18px;
-    line-height: 18px;
-    color: #888;
-    text-shadow: 0 1px 0 white;
-}
-
-.smartbanner-windows .smartbanner-close:active,
-.smartbanner-windows .smartbanner-close:hover {
-    color: #aaa;
-}
-
-.smartbanner-windows .smartbanner-icon {
-    background: rgba(0, 0, 0, 0.6);
-    background-size: cover;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.smartbanner-windows .smartbanner-info {
-    color: #6a6a6a;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-.smartbanner-windows .smartbanner-title {
-    color: #4d4d4d;
-    font-weight: bold;
-}
-
-.smartbanner-windows .smartbanner-button {
-    padding: 0 10px;
-    min-width: 10%;
-    color: #6a6a6a;
-    background: #efefef;
-    background: linear-gradient(to bottom, #efefef, #dcdcdc);
-    border-radius: 3px;
-    box-shadow: inset 0 0 0 1px #bfbfbf, 0 1px 0 rgba(255, 255, 255, 0.6), 0 2px 0 rgba(255, 255, 255, 0.7) inset;
-}
-
-.smartbanner-windows .smartbanner-button:active,
-.smartbanner-windows .smartbanner-button:hover {
-    background: #dcdcdc;
-    background: linear-gradient(to bottom, #dcdcdc, #efefef);
-}
-
-.smartbanner-windows .smartbanner-button-text {}
-
-.smartbanner-windows .smartbanner-button-text:active,
-.smartbanner-windows .smartbanner-button-text:hover {}
 </style>
